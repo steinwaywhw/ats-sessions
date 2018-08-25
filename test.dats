@@ -83,9 +83,18 @@ implement simplelink () = let
 in 
 end
 
+//local (**)
+
+//#include "./examples/ex-queue.dats"
+#include "./examples/ex-cut-residual.dats"
+
+//in (**)
+
 implement main0 () = let 
 	val _ = setup ()
-	val _ = simplelink()
+	val _ = test("Test Cut")
 in 
 	$extfcall(void, "sleep", 3)
 end 
+
+//end (**)

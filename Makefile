@@ -1,10 +1,10 @@
 
-CFLAGS=-std=c99 -g -O0  -DLOG_USE_COLOR -DDEBUG
+CFLAGS=-std=c11 -g -O0  -DLOG_USE_COLOR -DDEBUG
 CFLAGS+=-D_GNU_SOURCE -I$(PATSHOME) -I$(PATSHOME)/ccomp/runtime -I$(PATSHOME)/contrib/atscntrb -DATS_MEMALLOC_LIBC
 LDFLAGS=-lpthread 
 PATSOPT=patsopt --constraint-ignore
 
-all: test_dats test.tc
+all: test.tc test_dats 
 	mv test_dats a.out
 
 clean: 
@@ -23,3 +23,6 @@ clean:
 	$(PATSOPT) -o $@ -s $< 
 
 test_dats: endpoint_dats.o libsession_dats.o log.o runtime.o thread_dats.o test_dats.o
+
+xcode: endpoint_dats.c libsession_dats.c log.c runtime.c thread_dats.c test_dats.c
+	cp *.h $? ./xcode/Debug\ Session/Debug\ Session/ 

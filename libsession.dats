@@ -26,7 +26,7 @@ end
 
 implement session_close {full,self} {r} (ch) = let 
 	val ep = $UNSAFE.castvwtp0{ptr} ch
-	val _ = $extfcall(void, "ep_sync", ep, SYNC)
+	val _ = $extfcall(void, "ep_sync", ep, SYNC_CLOSE)
 	val ep = $UNSAFE.castvwtp0{endpoint} ep
 	val _ = ep_bsend<int> (ep, CLOSE, 0)
 	val _ = ep_free ep
@@ -35,7 +35,7 @@ end
 
 implement session_wait {full,self} {r} (ch, r) = let 
 	val ep = $UNSAFE.castvwtp0{endpoint} ch
-	val _ = ep_send<int> (ep, SYNC, r, 0)
+	val _ = ep_send<int> (ep, SYNC_CLOSE, r, $UNSAFE.cast{int}(ep_get_self ep))
 	val _ = ep_brecv<int> (ep, CLOSE, r)
 	val _ = ep_free ep
 in 
@@ -91,5 +91,82 @@ implement session_emp {full} {s} (ch) = let
 	val ep = $UNSAFE.castvwtp0{endpoint} ch 
 in 
 	ep_free ep 
+end
+
+implement session_choose {full,self} {r} {s,s1,s2} (ch, choice) = let 
+	fun snd (ep: endpoint, i: int): void = let
+		val _ = ep_bsend<int> (ep, BRANCH, i)
+		val _ = $UNSAFE.castvwtp0{void} ep
+	in 
+	end
+	extern praxi cast1 {x:stype} (!chan(full,self,x)>>chan(full,self,s1)): unit_p
+	extern praxi cast2 {x:stype} (!chan(full,self,x)>>chan(full,self,s2)): unit_p
+in 
+	case+ choice of 
+	| ~Left ()  => 
+		let 
+			val _ = snd($UNSAFE.castvwtp1{endpoint} ch, 0)
+			prval _ = cast1 ch
+		in end
+	| ~Right () => 
+		let 
+			val _ = snd($UNSAFE.castvwtp1{endpoint} ch, 1)
+		 	prval _ = cast2 ch
+		in end
+end
+
+implement session_offer {full,self} {r} {s1,s2} (ch, sender) = let 
+	val ep = $UNSAFE.castvwtp1{endpoint} ch
+	val c  = ep_brecv<int> (ep, BRANCH, sender)
+	val _ = $UNSAFE.castvwtp0{void} ep
+	extern praxi cast1 {x:stype} (!chan(full,self,x)>>chan(full,self,s1)): unit_p
+	extern praxi cast2 {x:stype} (!chan(full,self,x)>>chan(full,self,s2)): unit_p
+in 
+	if c = 0
+	then 
+		let prval _ = cast1 ch
+		in Left () end
+	else 
+		let prval _ = cast2 ch 
+		in Right () end
+end
+
+implement session_make<board> {s} {full,self} (full, self, board) = let 
+	val ep = $UNSAFE.castvwtp0{chan(full,self,s)} (ep_make (full, self, board))
+in
+	ep 
+end
+
+implement session_accept {full,self} {r} {s} (ch) = let
+	val ep = $UNSAFE.castvwtp1{ptr} ch
+	val _ = $extfcall(void, "ep_show", $UNSAFE.castvwtp1{ptr} ep)
+	val _ = $extfcall(void, "ep_sync", ep, SYNC_INIT)
+	val ep = $UNSAFE.castvwtp0{endpoint} ep
+	val _ = ep_bsend<int> (ep, INIT, 0)
+	val _ = $UNSAFE.castvwtp0{void} ep
+	extern praxi cast {x:stype} (!chan(full,self,x)>>chan(full,self,s)): unit_p
+	prval _ = cast ch
+
+in 
+end
+
+implement session_request {full,self} {r} {s} (ch, syncer, f) = let 
+
+	fun threadfn (ch: chan(full,self,pinit(r)::s), f: chan(full,self,s) -<lincloptr1> void): void = let 
+		val ep = $UNSAFE.castvwtp1{endpoint} ch
+		val _ = $extfcall(void, "ep_show", $UNSAFE.castvwtp1{ptr} ep)
+		val _ = ep_send<int> (ep, SYNC_INIT, syncer, $UNSAFE.cast{int}(ep_get_self ep))
+		val _ = ep_brecv<int> (ep, INIT, syncer)
+
+		val _ = $UNSAFE.castvwtp0{void} ep
+		extern praxi cast {x:stype} (!chan(full,self,x)>>chan(full,self,s)): unit_p
+		prval _ = cast ch
+		val _ = f ch
+		val _ = $UNSAFE.castvwtp0{void} f 
+	in 
+	end 
+
+in 
+	ignoret athread_create_cloptr_exn (llam () => threadfn (ch, f))
 end
 

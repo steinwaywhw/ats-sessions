@@ -1,5 +1,5 @@
 
-datatype msglabel = MSG | BRANCH | CLOSE | SYNC | KEEP | KILL
+datatype msglabel = MSG | BRANCH | CLOSE | INIT | SYNC_CLOSE | SYNC_INIT | KEEP | KILL
 
 ////
 absvtype msg = ptr

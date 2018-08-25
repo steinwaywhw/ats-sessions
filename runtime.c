@@ -80,7 +80,7 @@ int queue_free(struct queue_t* q) {
 		void* e = queue_deq(q);
 		if (e != NULL) free(e);
 	}
-	log_info("Queue @ %p freed.", (void*)q);
+	log_debug("Queue @ %p freed.", (void*)q);
 	free(q);
 	return i;
 }
@@ -183,26 +183,37 @@ int queue_find (struct queue_t* q, void* addr) {
 void msg_show(struct msg_t* m) {
 	char* label;
 	switch (m->label) {
-	case MSG_MSG      : label = "MSG";     break;
-	case MSG_FWD_KEEP : label = "KEEP";    break;
-	case MSG_FWD_KILL : label = "KILL";    break;
-	case MSG_BRANCH   : label = "BRANCH";  break;
-	case MSG_SYNC     : label = "SYNC";    break;
-	case MSG_CLOSE    : label = "CLOSE";   break;
-	default           : panic("Unknown label.");
+	case MSG_MSG        : label = "MSG";           break;
+	case MSG_FWD_KEEP   : label = "KEEP";          break;
+	case MSG_FWD_KILL   : label = "KILL";          break;
+	case MSG_BRANCH     : label = "BRANCH";        break;
+	case MSG_SYNC_INIT  : label = "SYNC_INIT";     break;
+	case MSG_SYNC_CLOSE : label = "SYNC_CLOSE";    break;
+	case MSG_CLOSE      : label = "CLOSE";         break;
+	case MSG_INIT       : label = "INIT";          break;
+	default             : panic("Unknown label.");
 	}
 
 	char buffer[100];
 	int i = sprintf(buffer, "\t[%s] [", label);
-	for(unsigned int mask = 0x8000; mask; mask >>= 1) {
+	for(unsigned int mask = 0x80; mask; mask >>= 1) {
 		i += sprintf(buffer+i, "%d", !!(mask & m->senders));
 	}
 	i += sprintf(buffer+i, "] [");	
-	for(unsigned int mask = 0x8000; mask; mask >>= 1) {
+	for(unsigned int mask = 0x80; mask; mask >>= 1) {
 		i += sprintf(buffer+i, "%d", !!(mask & m->receivers));    	
 	} 
 	const char* disp = m->label == MSG_FWD_KEEP || m->label == MSG_FWD_KILL ? ((struct board_t*)m->payload)->id : m->payload;
-	sprintf(buffer+i, "] [%s]", disp);	
+	if (disp == NULL) disp = "(null)";
+	// sprintf(buffer+i, "] [%s]", disp);	
+	i += sprintf(buffer+i, "]");
+	if (m->label == MSG_SYNC_INIT || m->label == MSG_SYNC_CLOSE) {
+		i += sprintf(buffer+i, " [");
+		for(unsigned int mask = 0x80; mask; mask >>= 1) {
+			i += sprintf(buffer+i, "%d", !!(mask & (int32_t)m->payload));    	
+		} 
+		sprintf(buffer+i, "]");
+	}
 	log_debug("%s", buffer);
 }
 
@@ -236,26 +247,27 @@ struct board_t* board_make(const char* id) {
 }
 
 struct board_t* board_ref(struct board_t* b) {
-	board_lock(b);
+	// board_lock(b);
 	b->refcount++;
-	log_info("Board %s @ %p inc ref to %d.", b->id, (void*)b, b->refcount);
-	board_unlock(b);
+	// log_info("Board %s @ %p inc ref to %d.", b->id, (void*)b, b->refcount);
+	// board_unlock(b);
 	return b;
 }
 
 int board_free(struct board_t* b) {
-	board_lock(b);
+	// board_lock(b);
 	b->refcount--;
 	assert(b->refcount >= 0);
 
 	if (b->refcount > 0) {
-		log_info("Board %s @ %p dec ref to %d.", b->id, (void*)b, b->refcount);
-		board_unlock(b);
+		// log_info("Board %s @ %p dec ref to %d.", b->id, (void*)b, b->refcount);
+		// board_unlock(b);
 		return -1;
 	}
 
 	assert(b->refcount == 0);
-	board_unlock(b);
+	// board_unlock(b);
+	board_show(b);
 	pthread_mutex_destroy(&b->mutex);
 	pthread_cond_destroy(&b->cond);
 
@@ -276,20 +288,20 @@ int board_free(struct board_t* b) {
 		// if (e != NULL) free(e);
 	}
 
-	int count = queue_free(b->queue);\
-	log_info("Board %s @ %p freed.", b->id, (void*)b);
+	int count = queue_free(b->queue);
+	log_info("Board %s @ %p freed with %d message(s).", b->id, (void*)b, i);
 	free(b);
 	return i;
 }
 
 void board_lock (struct board_t* board) {
 	pthread_mutex_lock(&board->mutex);
-	log_warn("Board @ %p locked.", (void*)board);
+	// log_warn("Board @ %p locked.", (void*)board);
 }
 
 void board_unlock (struct board_t* board) {
 	pthread_mutex_unlock(&board->mutex);
-	log_warn("Board @ %p unlocked.", (void*)board);
+	// log_warn("Board @ %p unlocked.", (void*)board);
 }
 
 
@@ -308,8 +320,8 @@ PRIVATE void search(int i, struct msg_t* m , struct search_env_t* env) {
 	// FWD_KEEP, set as found. 
 	if (m->label == MSG_FWD_KEEP) {
 		if (MSG_SET_SUB(env->pattern->receivers, m->receivers)) {
-		SETENV(i, m);
-		return;
+			SETENV(i, m);
+			return;
 		} else {
 			return;
 		}
@@ -337,23 +349,25 @@ PRIVATE void search(int i, struct msg_t* m , struct search_env_t* env) {
 }
 
 /**
- * Write to the blackboard. 
+ * Write to the blackboard. Write always succeeds. 
  * 
  * @param  b 	The board to write to.
  * @param  m 	The message.
- * @return   	The actual board that is written to.
+ * @return   	The board where the endpoint should be writing to/reading from.
  */
 struct board_t* board_write(struct board_t* b, struct msg_t* m) {
 	
 	board_lock(b);
 
 	if (b->queue->head == NULL || ((struct msg_t*)(b->queue->tail->payload))->label != MSG_FWD_KILL) {
-		log_debug("Writing to %s ...", b->id);
+		log_debug("Written to %p", (void*)b);
 		queue_enq(b->queue, m);
-		board_show(b);
+		// board_show(b);
 		// step();
 		pthread_cond_broadcast(&b->cond);
 		board_unlock(b);
+
+		// Write succeeds. Should continue to use the board.
 		return b;
 	}
 
@@ -376,11 +390,29 @@ struct board_t* board_write(struct board_t* b, struct msg_t* m) {
 		// return last;
 	// } 
 
-	// Keep writing.
 	board_unlock(b);
-	struct board_t* child = (struct board_t*)(last->payload);
-	log_debug("Jumping from %s to %s.", b->id, child->id);
-	return board_write(child, m);
+
+	struct board_t* child = (struct board_t*)last->payload;
+	log_info("Saw KILL in %s. Writing again to %s %p", b->id, child->id, (void*)child);
+	board_show(b);
+	struct board_t* grandchild = board_write(child, m);
+
+	board_lock(b);
+
+	// If KILL is the only message left.
+	if (b->queue->head == b->queue->tail) {
+		assert(last->label == MSG_FWD_KILL);
+
+		// The `b` board should be freed, and the endpoint needs to use the new board. 
+		pthread_cond_broadcast(&b->cond);
+		board_unlock(b);
+		return grandchild;
+	}
+
+	// Otherwise, continue to use `b`.
+	pthread_cond_broadcast(&b->cond);
+	board_unlock(b);
+	return b;
 }
 
 
@@ -403,12 +435,12 @@ struct board_t* board_read(struct board_t* b, struct msg_t* pattern, struct msg_
 	struct search_env_t env = {.index = -1, .pattern = pattern, .found = NULL};
 	queue_iforeach(b->queue, (queue_fn)search, (void*)&env);
 	while (env.index < 0) {
-		log_debug("Try reading from %s ...", b->id);
+		// log_debug("Try reading from %p", b->id);
 		pthread_cond_wait(&b->cond, &b->mutex);
 		queue_iforeach(b->queue, (queue_fn)search, (void*)&env);
 	}
 
-	log_debug("Reading from %s.", b->id);
+	// log_info("Reading from %s %p", b->id, (void*)b);
 	struct msg_t   *found = env.found;
 	struct board_t *grandchild, *child;
 
@@ -424,27 +456,29 @@ struct board_t* board_read(struct board_t* b, struct msg_t* pattern, struct msg_
 		// Jump.
 		// log_debug("Jumping from %s to %s.", b->id, child->id);
 		// struct msg_t* childfound = board_read(child, pattern);
+		log_info("Saw KEEP in %s. Reading again from %s %p", b->id, child->id, (void*)child);
 		grandchild = board_read(child, pattern, out);
 
 		// Found the message. FWD_KEEP untouched. 
 		// if (childfound->label == pattern->label) return childfound; 
 	
 		// DO I NEED TO LOCK HERE? 
-		board_lock(b);
+		
 
 		if (out->label == pattern->label) {
 			// if (grandchild != child) {
 			// 	board_free(child);
 			// 	found->payload = board_ref(grandchild);
 			// }
-			board_unlock(b);
+			log_debug("Read success from KEEP in %s.", b->id);
+			//board_unlock(b);
 			return b;
 		}
 
+		board_lock(b);
 		// Must be aborted. Mark.
 		// board_lock(b);
 		// assert(childfound->label == MSG_FWD_KILL);
-		found->receivers = MSG_SET_MINUS(found->receivers, pattern->receivers);
 
 		// If all bits are marked, delete FWD_KEEP.
 		// if (found->receivers == 0) {
@@ -454,17 +488,30 @@ struct board_t* board_read(struct board_t* b, struct msg_t* pattern, struct msg_
 		// 	free(found);
 		// }
 		// 
+		// 
+
+		// If someone else has freed the KEEP, just return.
+		int index = queue_find(b->queue, found);
+		if (index < 0) {
+			log_info("Someone else deleted KEEP.");
+			board_unlock(b);
+			return board_read(b, pattern, out);
+		}
+
+		// Otherwise.
+
+		found->receivers = MSG_SET_MINUS(found->receivers, pattern->receivers);
 		
 		// If the child board has only a KILL message, 
 		// then delete the KEEP message, and release the board.
 		if (child->queue->head == child->queue->tail) {
 			board_free(child);
-			int index = queue_find(b->queue, found);
-			assert(index >= 0);
 			found = queue_ideq(b->queue, index);
-			free(found);
+			log_info("KEEP %p @ %s deleted.", (void*)found, b->id);
+			free(found);				
 		}
 
+		log_info("Read failed from KEEP in %s", b->id);
 		board_unlock(b);
 
 		// Need to redo the read.
@@ -486,9 +533,11 @@ struct board_t* board_read(struct board_t* b, struct msg_t* pattern, struct msg_
 		// Failed to find any message. Abort.
 		// This case is only for readings initiated via a JUMP from KEEP messages.
 		if (MSG_SET_SUB(pattern->receivers, found->senders)) {
-			log_debug("No message found in %s. Abort.", b->id);
+			log_info("Saw KILL in %s. Read failed.", b->id);
 			// return found;
 			board_unlock(b);
+
+			// board_show(b);
 			return b;
 		}
 			
@@ -497,6 +546,7 @@ struct board_t* board_read(struct board_t* b, struct msg_t* pattern, struct msg_
 		board_unlock(b);
 		// return found;
 		child = (struct board_t*)(found->payload);
+		log_info("Saw KILL in %s. Read again from %s %p", b->id, child->id, (void*)child);
 		return board_read(child, pattern, out);
 
 	default:
@@ -511,10 +561,11 @@ struct board_t* board_read(struct board_t* b, struct msg_t* pattern, struct msg_
 		// If all received, delete the message.
 		if (found->receivers == 0) free(queue_ideq(b->queue, env.index));
 
-		board_show(b);
+		// board_show(b);
 		
 		board_unlock(b);
 		// return ret;
+		log_info("Read success in %s %p", b->id, (void*)b);
 		return b;
 	}
 
@@ -615,13 +666,15 @@ struct board_t* board_read(struct board_t* b, struct msg_t* pattern, struct msg_
 // }
 
 PRIVATE void board_dbgfn(int i, struct msg_t* m, void* env) {
-	// log_debug("%3d => ", i);
+	log_debug("  %s => ", env);
 	msg_show(m);
 }
 
 void board_show(struct board_t* b) {
-	log_debug("Board %s", b->id);
-	queue_iforeach(b->queue, (queue_fn)board_dbgfn, NULL);
+	board_lock(b);
+	log_debug("Board %s %p ref %d", b->id, (void*)b, b->refcount);
+	queue_iforeach(b->queue, (queue_fn)board_dbgfn, b->id);
+	board_unlock(b);
 }
 
 // PRIVATE void* board_testfn_w(void** args) {
@@ -686,22 +739,23 @@ struct ep_t* ep_make(int32_t full, int32_t self, struct board_t* board) {
 }
 
 void ep_free(struct ep_t* ep) {
-	struct board_t* b = ep->board;
+	board_free(ep->board);
 	free(ep);
-	board_free(b);
 	return;
 }
 
 void ep_send(struct ep_t* ep, int label, int32_t to, void* payload) {
 	// `m` will be owned by the board.
 	struct msg_t* m = msg_make(label, ep->self, to, payload);
+
+	// msg_show(m);
 	// `last` is read-only. It is still owned by the board.
-	struct board_t* last = board_write(ep->board, m);
+	struct board_t* child = board_write(ep->board, m);
 	
 	// If the board has changed.
-	if (last != ep->board) {
+	if (child != ep->board) {
 		board_free(ep->board);
-		ep->board = board_ref(last);
+		ep->board = board_ref(child);
 	}
 
 	// while (last != ep->board) {
@@ -711,7 +765,7 @@ void ep_send(struct ep_t* ep, int label, int32_t to, void* payload) {
 		// ep_show(ep);
 		// last = board_write(ep->board, m);
 	// }
-
+	// board_show(ep->board);
 	return;
 }
 
@@ -745,16 +799,19 @@ void* ep_recv(struct ep_t* ep, int label, int32_t from) {
 	// This is only possible in shared memory.
 	void* payload = found->payload;
 	
+	board_show(ep->board);
 	free(p);
 	free(found);
 	return payload;
 }
 
 void ep_sync(struct ep_t* ep, int label) {
+	int32_t senders = MSG_SET_MINUS(ep->full, ep->self);
 	for(unsigned int mask = 0x8000; mask; mask >>= 1) {
-		int cur = mask & (MSG_SET_MINUS(ep->full, ep->self));
+		int cur = mask & senders;
 		if (cur > 0) {
-			void* ptr = ep_recv(ep, label, cur);
+			int32_t sender = (int32_t)(ep_recv(ep, label, cur));
+			senders = MSG_SET_MINUS(senders, sender);
 		}
 	} 
 
@@ -827,11 +884,11 @@ struct ep_t* ep_link(struct ep_t* ep1, struct ep_t* ep2) {
 void ep_show(struct ep_t* ep) {
 	char buffer[64];
 	int i = sprintf(buffer, "Endpoint [");
-	for(unsigned int mask = 0x8; mask; mask >>= 1) {
+	for(unsigned int mask = 0x80; mask; mask >>= 1) {
 		i += sprintf(buffer+i, "%d", !!(mask & ep->full));    	
 	}
 	i += sprintf(buffer+i, "] [");
-	for(unsigned int mask = 0x8; mask; mask >>= 1) {
+	for(unsigned int mask = 0x80; mask; mask >>= 1) {
 		i += sprintf(buffer+i, "%d", !!(mask & ep->self));    	
 	}
 	sprintf(buffer+i, "] [%s] @ %p", ep->board->id, (void*)ep);

@@ -54,7 +54,7 @@ fun {a:vt@ype} session_recv
 
 prfun session_skip 
 	{full,self:roles|full>self} {from,to:role|(mem(self,from)*mem(self,to))+(mem(full-self,from)*mem(full-self,to))} {a:vt@ype} {s:stype}
-	(!chan(full,self,pmsg(from,to,a)::s)>>chan(full,self,s)): void
+	(!chan(full,self,pmsg(from,to,a)::s)>>chan(full,self,s)): unit_p
 
 fun {a:t@ype} session_bsend
     {full,self:roles|full>self} {from:role|mem(self,from)} {s:stype}
@@ -76,9 +76,9 @@ fun session_fork
 	{rs1,rs2:roles} {s:stype} 
 	(set rs1, set rs2, chan(rs1+rs2,rs1,s) -<lincloptr1> void): chan(rs1+rs2,rs2,s)
 
-fun session_make
-	{full,self:roles|full>self} {s:stype}
-	(set full, set self): chan(full,self,s)
+fun {a:vt@ype} session_make
+	{s:stype} {full,self:roles|full>self} 
+	(set full, set self, connection: !a): chan(full,self,s)
 
 fun session_accept
 	{full,self:roles|full>self} {r:role|mem(self,r)} {s:stype}
@@ -86,7 +86,7 @@ fun session_accept
 
 fun session_request
 	{full,self:roles|full>self} {r:role|mem(full-self,r)} {s:stype}
-	(chan(full,self,pinit(r)::s), chan(full,self,s) -<lincloptr1> void): void
+	(chan(full,self,pinit(r)::s), int r, chan(full,self,s) -<lincloptr1> void): void
 
 castfn session_exify 
 	   {full,self:roles|full>self} {r:role|mem(full-self,r)} {fp:int->stype} 
@@ -115,7 +115,7 @@ fun session_choose
 
 fun session_offer
 	{full,self:roles|full>self} {r:role|mem(full-self,r)} {s1,s2:stype}
-	(!chan(full,self,pbranch(r,s1,s2))>>chan(full,self,s)): #[s:stype] choice (s,s1,s2)
+	(!chan(full,self,pbranch(r,s1,s2))>>chan(full,self,s), int r): #[s:stype] choice (s,s1,s2)
 
 fun session_link
 	{full,rs1,rs2:roles|(full>rs1)*(full>rs2)*disj(full-rs1,full-rs2)} {s:stype} 

@@ -4,6 +4,7 @@
 #define PRIVATE 
 
 #include <pthread.h>
+#include <stdatomic.h>
 
 /**
  * Utils.
@@ -59,7 +60,9 @@ enum {
 	MSG_MSG,  
 	MSG_BRANCH, 
 	MSG_CLOSE,
-	MSG_SYNC,
+	MSG_INIT,
+	MSG_SYNC_CLOSE,
+	MSG_SYNC_INIT,
 	MSG_FWD_KEEP,
 	MSG_FWD_KILL
 };
@@ -91,7 +94,7 @@ struct board_t {
 	pthread_mutex_t mutex;
 	pthread_cond_t  cond;
 	
-	int refcount;
+	atomic_int refcount;
 	struct queue_t* queue;
 	char id[64];
 };
@@ -121,6 +124,9 @@ struct ep_t {
 	int32_t self;
 	int32_t full;
 };
+
+#define ep_get_self(x) (((struct ep_t*)(x))->self)
+#define ep_get_full(x) (((struct ep_t*)(x))->full)
 
 struct ep_t* ep_make (int32_t full, int32_t self, struct board_t* board);
 void         ep_free (struct ep_t* ep); 

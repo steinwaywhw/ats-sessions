@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>recorder.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Endpoint.html">Endpoint</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#.link">link</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#_init_follower">_init_follower</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#_init_leader">_init_leader</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#_send">_send</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#broadcast">broadcast</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#close">close</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#handler">handler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#init">init</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#onlink">onlink</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#receive">receive</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#toJSON">toJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#wait">wait</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Mailbox.html">Mailbox</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#clear">clear</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#close">close</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#isempty">isempty</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#mails">mails</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#match">match</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#matchany">matchany</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#put">put</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#toJSON">toJSON</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="MailboxWorker.html">MailboxWorker</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#_condition">_condition</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#_conditions">_conditions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#dispatch">dispatch</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#onclear">onclear</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#onclose">onclose</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#onmatch">onmatch</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#onput">onput</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Msg.html">Msg</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="SessionEvent.html">SessionEvent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="SessionEvent.html#.Recv">Recv</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="SessionEvent.html#.Send">Send</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Sock.html">Sock</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Sock.html#bind">bind</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Sock.html#close">close</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Sock.html#connect">connect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Sock.html#disconnect">disconnect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Sock.html#send">send</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">recorder.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict"
+
+const nanomsg = require("nanomsg")
+const uuidv4  = require("uuid/v4")
+const _       = require("./collections.js")
+const util    = require("util")
+
+const Msg      = require("./msg.js")
+const Endpoint = require("./endpoint.js")
+const Mailbox  = require("./mailbox.js")
+
+const sleep  = ms   => new Promise((resolve, reject) => setTimeout(resolve, ms))
+
+
+/**
+ * A session event with label, data, and timestamp.
+ *
+ * {ep, {id, state, peer, roles}}
+ * 
+ */
+class SessionEvent {
+	constructor(label, data) {
+		this.label = label 
+		this.data  = data 
+		this.time  = new Date()
+	}
+
+	static Endpoint(ep) {
+		return new SessionEvent("endpoint", ep)
+	}
+
+	static CloseEndpoint(ep) {
+		return new SessionEvent("closeendpoint", ep)	
+	}
+
+	static Mailbox(mbox) {
+		return new SessionEvent("mailbox", mbox)
+	}
+
+	static CloseMailbox(mbox) {
+		return new SessionEvent("closemailbox", mbox)
+	}
+
+	/**
+	 * [Send description]
+	 * @param {uuid}        f   [description]
+	 * @param {Array&lt;uuid>} ts  [description]
+	 * @param {Msg}         msg [description]
+	 */
+	static Send(f, ts, msg) {
+		return new SessionEvent("send", {msg: msg, from: f, to: ts.clone()})
+	}
+
+	/**
+	 * [Recv description]
+	 * @param {uuid} f   [description]
+	 * @param {uuid} t   [description]
+	 * @param {Msg}  msg [description]
+	 */
+	static Recv(f, t, msg) {
+		return new SessionEvent("recv", {msg: msg, from: f, to: t})
+	}
+
+
+}
+
+
+class SessionRecorderWorker {
+	constructor(addr) {
+		this.events    = []
+
+		this.sock = nanomsg.socket("pair")
+		this.sock.setEncoding("utf8")
+		this.sock.connect(addr)
+
+		this.sock.on("data", msg => {
+			msg = JSON.parse(msg)
+			this.dispatch(msg)
+		})
+	}
+
+	dispatch(msg) {
+		switch (msg.label) {
+		case "endpoint": 
+			this.events.push(SessionEvent.Endpoint(msg.payload))
+			break 
+		case "closeendpoint":
+			this.events.push(SessionEvent.CloseEndpoint(msg.payload))
+			break
+		case "mailbox":
+			this.events.push(SessionEvent.Mailbox(msg.payload))
+			break
+		case "closemailbox":
+			this.events.push(SessionEvent.CloseMailbox(msg.payload))
+			break
+		case "send": 
+			this.send(msg.payload.endpoint, msg.payload.msg)
+			break 
+		case "recv": 
+			this.recv(msg.payload.endpoint, msg.payload.msg)
+			break 
+		}
+	}
+
+	send(ep, msg) {
+		const f = ep.id 
+		const peers = new Map(ep.peers).foldr([], (uuid, role, base) => { 
+			if (uuid != f) base.push(uuid)
+			return base
+		})
+
+		this.events.push(SessionEvent.Send(f, msg.receivers.length > 0 ? msg.receivers : peers, msg))
+	}
+
+	recv(ep, msg) {
+		const f = msg.sender 
+		const t = ep.id 
+
+		this.events.push(SessionEvent.Recv(f, t, msg))
+	}
+}
+
+class SessionRecorder {
+	constructor() {
+		const addr = `inproc://${uuidv4()}`
+		this.sock = nanomsg.socket("pair")
+		this.sock.setEncoding("utf8")
+		this.sock.bind(addr)
+		this.worker = new SessionRecorderWorker(addr)
+	}
+
+	endpoint(ep) {
+		this.sock.send(JSON.stringify(new Msg("endpoint", null, ep)))
+	}
+
+	closeendpoint(ep) {
+		this.sock.send(JSON.stringify(new Msg("closeendpoint", null, ep)))
+	}
+
+	mailbox(mbox) {
+		this.sock.send(JSON.stringify(new Msg("mailbox", null, mbox)))
+	}
+
+	closemailbox(mbox) {
+		this.sock.send(JSON.stringify(new Msg("closemailbox", null, mbox)))
+	}
+
+	send(ep, msg) {
+		this.sock.send(JSON.stringify(new Msg("send", null, {endpoint: ep, msg: msg})))
+	}
+
+	recv(ep, msg) {
+		this.sock.send(JSON.stringify(new Msg("recv", null, {endpoint: ep, msg: msg})))
+	}
+
+	events() {
+		return this.worker.events
+	}
+}
+
+const instance = new SessionRecorder()
+module.exports = instance</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Dec 28 2017 11:24:51 GMT-0500 (EST) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

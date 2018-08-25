@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>collections.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Endpoint.html">Endpoint</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#.link">link</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#_init_follower">_init_follower</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#_init_leader">_init_leader</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#_send">_send</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#broadcast">broadcast</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#close">close</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#handler">handler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#init">init</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#onlink">onlink</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#receive">receive</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#toJSON">toJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Endpoint.html#wait">wait</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Mailbox.html">Mailbox</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#clear">clear</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#close">close</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#isempty">isempty</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#mails">mails</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#match">match</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#matchany">matchany</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#put">put</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Mailbox.html#toJSON">toJSON</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="MailboxWorker.html">MailboxWorker</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#_condition">_condition</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#_conditions">_conditions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#dispatch">dispatch</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#onclear">onclear</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#onclose">onclose</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#onmatch">onmatch</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="MailboxWorker.html#onput">onput</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Msg.html">Msg</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="SessionEvent.html">SessionEvent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="SessionEvent.html#.Recv">Recv</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="SessionEvent.html#.Send">Send</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Sock.html">Sock</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Sock.html#bind">bind</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Sock.html#close">close</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Sock.html#connect">connect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Sock.html#disconnect">disconnect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Sock.html#send">send</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">collections.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict"
+
+/**
+ * Extensions to Array
+ */
+
+Array.prototype.foldr = function (base, fn) {
+	const fold = (base, index) => {
+		if (index == this.length) 
+			return base
+		return fn(this[index], fold(base, index+1))
+	}
+	return fold(base, 0)
+}
+
+Array.prototype.foldl = function (base, fn) {
+	const fold = (base, index) => {
+		if (index == this.length)
+			return base 
+		return fold(fn(this[index], base), index+1)
+	}
+	return fold(base, 0)
+}
+
+Array.prototype.clone = function () {
+	return this.slice(0)
+}
+
+
+
+/**
+ * Extensions to Set
+ */
+
+Set.prototype.every = function (fn) {
+	for (const e of this) {
+		if (!fn(e))	return false 
+	}
+	return true 
+}
+
+Set.prototype.some = function (fn) {
+	for (const e of this) {
+		if (fn(e)) return true
+	}
+	return false 
+}
+
+Set.prototype.clone = function () {
+	return new Set(this)
+}
+
+Set.prototype.different = function (other) { 
+	this.forEach(e => {if (other.has(e)) this.delete(e)})
+	return this 
+}
+
+Set.prototype.intersect = function (other) {
+	this.forEach(e => {if (!other.has(e)) this.delete(e)})
+	return this
+}
+
+Set.prototype.union = function (other) {
+	other.forEach(e => this.add(e))
+	return this
+}
+
+Set.prototype.toJSON = function () {
+	return [...this]
+}
+
+Set.prototype.foldr = function (base, fn) {
+	const tmp = [...this]
+	const fold = (base, index) => {
+		if (index == this.size) 
+			return base
+		return fn(tmp[index], fold(base, index+1))
+	}
+	return fold(base, 0)
+}
+
+Set.prototype.foldl = function (base, fn) {
+	const tmp = [...this]
+	const fold = (base, index) => {
+		if (index == this.size)
+			return base 
+		return fold(fn(tmp[index], base), index+1)
+	}
+	return fold(base, 0)
+}
+
+Set.prototype.deleteall = function (fn) {
+	this.forEach(e => {if (fn(e)) this.delete(e)})
+}
+
+Set.prototype.find = function (fn) {
+	for (const e of this) {
+		if (fn(e)) return e
+	}
+	return null
+}
+
+Set.intersect = function (a, b) {
+	let ret = a.clone()
+	ret.intersect(b)
+	return ret
+}
+
+Set.union = function (a, b) {
+	let ret = a.clone()
+	ret.union(b)
+	return ret
+}
+
+
+/**
+ * Extensions to Map
+ */
+
+Map.prototype.clone = function () {
+	return new Map(this)
+}
+
+Map.prototype.every = function (fn) {
+	for (const [key, value] of this) {
+		if (!fn(value, key)) return false
+	}
+	return true 
+}
+
+Map.prototype.some = function (fn) {
+	for (const [key, value] of this) {
+		if (fn(value, key)) return true 
+	}
+	return false
+}
+
+Map.prototype.foldr = function (base, fn) {
+	const iter = this.entries()
+	const fold = base => {
+		const item = iter.next()
+		if (item.done) 
+			return base
+
+		// item.value = [key, val]
+		return fn(item.value[1], item.value[0], fold(base))
+	}
+	return fold(base)
+}
+
+Map.prototype.foldl = function (base, fn) {
+	const iter = this.entries()
+	const fold = base => {
+		const item = iter.next()
+		if (item.done) 
+			return base
+
+		// item.value = [key, val]
+		return fold(fn(item.value[1], item.value[0], base))
+	}
+	return fold(base)
+}
+
+Map.prototype.haskey = function (key) {
+	return this.has(key)
+}
+
+Map.prototype.hasvalue = function (value) {
+	return this.some((v, k) => v === value)
+}
+
+Map.prototype.toJSON = function () {
+	return [...this]
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Dec 28 2017 11:24:51 GMT-0500 (EST) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

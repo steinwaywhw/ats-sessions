@@ -1,0 +1,50 @@
+(error "line 1 column 11: unexpected character")
+(error "line 1 column 22: unexpected character")
+(error "line 66 column 33: Invalid function declaration: unknown sort 'stype'")
+(error "line 67 column 45: Invalid function declaration: unknown sort 'stype'")
+(error "line 68 column 23: Parsing function declaration. Expecting sort list '(': unknown sort 'stype'")
+(error "line 69 column 24: unknown sort 's2rt_fun'")
+(error "line 79 column 35: Invalid function declaration: unknown sort 'stype'")
+(error "line 82 column 52: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 514(line=19, offs=27) -- 514(line=19, offs=27)
+sat
+(error "line 89 column 52: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 547(line=20, offs=29) -- 547(line=20, offs=29)
+sat
+(error "line 96 column 65: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 547(line=20, offs=29) -- 547(line=20, offs=29)
+sat
+(error "line 102 column 27: Invalid function declaration: unknown sort 'stype'")
+(error "line 103 column 27: Invalid function declaration: unknown sort 'stype'")
+(error "line 104 column 23: unknown constant s$967$968$969!4429")
+(error "line 105 column 23: unknown constant p$958!4418")
+(error "line 106 column 23: unknown constant q$959!4419")
+(error "line 109 column 52: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 606(line=23, offs=31) -- 606(line=23, offs=31)
+sat
+(error "line 116 column 39: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 606(line=23, offs=31) -- 606(line=23, offs=31)
+sat
+(error "line 125 column 27: Invalid function declaration: unknown sort 'stype'")
+(error "line 126 column 27: Invalid function declaration: unknown sort 'stype'")
+(error "line 127 column 23: unknown constant s$967$968$969!4429")
+(error "line 128 column 23: unknown constant p$960!4420")
+(error "line 129 column 23: unknown constant q$961!4421")
+(error "line 132 column 52: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 662(line=24, offs=29) -- 662(line=24, offs=29)
+sat
+(error "line 139 column 65: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 662(line=24, offs=29) -- 662(line=24, offs=29)
+sat
+(error "line 152 column 54: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 727(line=27, offs=53) -- 729(line=27, offs=55)
+sat
+(error "line 159 column 41: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 727(line=27, offs=53) -- 729(line=27, offs=55)
+sat
+(error "line 167 column 54: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 676(line=27, offs=2) -- 734(line=27, offs=60)
+sat
+(error "line 174 column 41: unknown constant smt_set_emp")
+/Users/hwwu/Git/ats-sessions/examples/ex-sieve.dats: 676(line=27, offs=2) -- 734(line=27, offs=60)
+sat

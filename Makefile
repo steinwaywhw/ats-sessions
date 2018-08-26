@@ -8,7 +8,7 @@ all: test.tc test_dats
 	mv test_dats a.out
 
 clean: 
-	rm -rf *.const *.tc *_dats.c *_sats.c *.o
+	rm -rf *.const *.tc *_dats.c *_sats.c *.o examples/*.const examples/*.tc *.dSYM
 
 %.const: %.dats
 	patsopt -tc --constraint-export -d $< | patsolve_smt2 -i preamble --printfile ./set.smt2 -i - > $@
@@ -23,6 +23,3 @@ clean:
 	$(PATSOPT) -o $@ -s $< 
 
 test_dats: endpoint_dats.o libsession_dats.o log.o runtime.o thread_dats.o test_dats.o
-
-xcode: endpoint_dats.c libsession_dats.c log.c runtime.c thread_dats.c test_dats.c
-	cp *.h $? ./xcode/Debug\ Session/Debug\ Session/ 

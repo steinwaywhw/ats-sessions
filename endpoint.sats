@@ -16,14 +16,10 @@ fun ep_get_full (!endpoint): [s:set] set s = "mac#"
 
 fun ep_link (endpoint, endpoint): endpoint = "mac#"
 
-(* Linear send, transfer ownership to the message. *)
-fun {a:vt@ype} ep_send  {s:set} (!endpoint, msglabel, int, a): void 
 
-(* Nonlinear send, receivers copy. *)
-fun {a:t@ype}  ep_bsend {s:set} (!endpoint, msglabel, a): void
-
-(* Linear receive, transfer ownership from the message. *)
-fun {a:vt@ype} ep_recv  {s:set} (!endpoint, msglabel, int): a
-
-(* Nonlinear receive, copy. *)
-fun {a:t@ype}  ep_brecv {s:set} (!endpoint, msglabel, int): a 
+fun {a:t@ype}  ep_bsend (!endpoint, msglabel, int, a): void
+fun {a:t@ype}  ep_brecv (!endpoint, msglabel, int): a 
+fun {a:vt@ype} ep_send  (!endpoint, msglabel, int, int, a): void 
+fun {a:vt@ype} ep_recv  (!endpoint, msglabel, int, int): a
+fun {a:t@ype}  ep_sync_send (!endpoint, msglabel, int, a): void
+fun            ep_sync_recv (!endpoint, msglabel, int): void

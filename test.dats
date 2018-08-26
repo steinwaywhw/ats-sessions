@@ -21,7 +21,7 @@ implement setup () = let
 	val LOG_INFO = $extval(int, "LOG_INFO")
 	val _ = $extfcall(void, "install_handler")
  	val _ = $extfcall(void, "log_set_pthread")
-// 	val _ = $extfcall(void, "log_set_level", LOG_INFO)
+ 	val _ = $extfcall(void, "log_set_level", LOG_INFO)
 in 
 end
 
@@ -32,15 +32,15 @@ implement helloworld () = let
 	stadef helloworld = pbmsg(1,string)::pbmsg(2,string)::pend(1)
 
 	fun client (ch: chan(rs1+rs2,rs1,helloworld)): void = let
-		val _ = session_bsend<string> (ch, "hello")
+		val _ = session_bsend<string> (ch, 1, "hello")
 		val _ = println! (session_brecv<string> (ch, 2))
 	in
-		session_close ch
+		session_close (ch, 1)
 	end
 
 	fun server (ch: chan(rs1+rs2,rs2,helloworld)): void = let 
 		val _ = println! (session_brecv<string> (ch, 1))
-		val _ = session_bsend (ch, "world!")
+		val _ = session_bsend (ch, 2, "world!")
 	in 
 		session_wait (ch, 1)
 	end
@@ -57,21 +57,21 @@ implement simplelink () = let
 	stadef helloworld = pbmsg(1,string)::pbmsg(2,string)::pbmsg(1,string)::pbmsg(2,string)::pend(1)
 
 	fun client (ch: chan(rs1+rs2,rs1,helloworld)): void = let
-		val _ = session_bsend<string> (ch, "hello1")
+		val _ = session_bsend<string> (ch, 1, "hello1")
 		val _ = println! (session_brecv<string> (ch, 2))
 		val _ = $extfcall(void, "sleep", 1)
-		val _ = session_bsend<string> (ch, "hello2")
+		val _ = session_bsend<string> (ch, 1, "hello2")
 		val _ = println! (session_brecv<string> (ch, 2))
 	in
-		session_close ch
+		session_close (ch, 1)
 	end
 
 	fun server (ch: chan(rs1+rs2,rs2,helloworld)): void = let 
 		val _ = println! (session_brecv<string> (ch, 1))
-		val _ = session_bsend (ch, "world1!")
+		val _ = session_bsend (ch, 2, "world1!")
 		val _ = $extfcall(void, "sleep", 1)
 		val _ = println! (session_brecv<string> (ch, 1))
-		val _ = session_bsend (ch, "world2!")
+		val _ = session_bsend (ch, 2, "world2!")
 	in 
 		session_wait (ch, 1)
 	end
@@ -94,7 +94,7 @@ implement main0 () = let
 	val _ = setup ()
 	val _ = test("Test Cut")
 in 
-	$extfcall(void, "sleep", 3)
+	$extfcall(void, "sleep", 2)
 end 
 
 //end (**)

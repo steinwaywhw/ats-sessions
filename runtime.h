@@ -18,10 +18,10 @@ void    install_handler();
 /**
  * Use `PACK(a, b, c)` to generate `arr2bits(3, (int[3]){a, b, c})`
  */
-#define ARGC(...)  ARGC_(__VA_ARGS__, 10,9,8,7,6,5,4,3,2,1,0)
-#define ARGC_(...) ARGC__(__VA_ARGS__)
-#define ARGC__(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N, ...) N
-#define PACK(...) arr2bits(ARGC(__VA_ARGS__), (int[ARGC(__VA_ARGS__)]){__VA_ARGS__})
+// #define ARGC(...)  ARGC_(__VA_ARGS__, 10,9,8,7,6,5,4,3,2,1,0)
+// #define ARGC_(...) ARGC__(__VA_ARGS__)
+// #define ARGC__(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N, ...) N
+// #define PACK(...) arr2bits(ARGC(__VA_ARGS__), (int[ARGC(__VA_ARGS__)]){__VA_ARGS__})
 
 /**
  * Simple queue. 
@@ -39,16 +39,16 @@ struct queue_t {
 	struct queue_node_t* tail;
 };
 
-typedef void (*queue_fn)(int, void*, void*);
 
 struct queue_t* queue_make ();
 int             queue_free (struct queue_t* q); // Return number of nodes.
 void            queue_enq  (struct queue_t* q, void* payload);
 void*           queue_deq  (struct queue_t* q);
 void*           queue_ideq (struct queue_t* q, int i);
-void*           queue_iget (struct queue_t* q, int i);
 int             queue_find (struct queue_t* q, void* addr);
-void            queue_iforeach(struct queue_t* q, queue_fn, void*);
+
+typedef void (*queue_fn)(int, void*, void*);
+void queue_iforeach(struct queue_t* q, queue_fn, void*);
 
 /**
  * Messages.
@@ -68,11 +68,16 @@ enum {
 };
 
 #define MSG_SET_ADD(a, x)   ((a) | (1 << (b)))
+#define MSG_SET_MINUS(a, b) ((a) & (~(b)))
 #define MSG_SET_SUB(a, b)   (((a) | (b)) == (b))
 #define MSG_SET_SUP(a, b)   (((a) | (b)) == (a))
-#define MSG_SET_MINUS(a, b) ((a) & (~(b)))
 #define MSG_SET_CAP(a, b)   ((a) & (b))
 #define MSG_SET_CUP(a, b)   ((a) | (b))
+
+#define MSG_LABEL_MATCH(m, p)  ((p)->label < 0 || (m)->label == (p)->label)
+#define MSG_RECVER_MATCH(m, p) ((p)->receivers < 0 || MSG_SET_SUP((m)->receivers, (p)->receivers))
+#define MSG_SENDER_MATCH(m, p) ((p)->senders < 0 || MSG_SET_SUP((m)->senders, (p)->senders))
+#define MSG_MATCH(m, p)        (MSG_LABEL_MATCH(m,p) && MSG_SENDER_MATCH(m,p) && MSG_RECVER_MATCH(m,p))
 
 struct msg_t {
 	int label;
@@ -82,10 +87,13 @@ struct msg_t {
 };
 
 struct msg_t* msg_make (int label, int32_t senders, int32_t receivers, void* payload);
-void          msg_free (struct msg_t* m);
-void          msg_show (struct msg_t* m);
+void          msg_free (struct msg_t* msg);
 
-
+void          msg_show           (struct msg_t* msg);
+void          msg_show_prefix    (struct msg_t* msg, const char* prefix);
+const char*   msg_show_label     (struct msg_t* msg);
+int           msg_show_senders   (struct msg_t* msg, char* buffer);
+int           msg_show_receivers (struct msg_t* msg, char* buffer);
 /**
  * Blackboard.
  */
@@ -102,7 +110,7 @@ struct board_t {
 
 struct board_t* board_make   (const char* id);
 struct board_t* board_ref    (struct board_t* board);
-int             board_free   (struct board_t* board);  // return number of messages. 
+int             board_free   (struct board_t* board);  // Return number of messages. 
  
 struct board_t* board_write  (struct board_t* board, struct msg_t* msg);
 struct board_t* board_read   (struct board_t* board, struct msg_t* pattern, struct msg_t* out);
@@ -110,8 +118,8 @@ struct board_t* board_read   (struct board_t* board, struct msg_t* pattern, stru
 void            board_lock   (struct board_t* board);
 void            board_unlock (struct board_t* board);
 
-void            board_show   (struct board_t* board);
-void            board_test   ();
+void            board_show        (struct board_t* board);
+void            board_show_nolock (struct board_t* board);
 
 /**
  * Endpoint.
@@ -130,13 +138,13 @@ struct ep_t {
 
 struct ep_t* ep_make (int32_t full, int32_t self, struct board_t* board);
 void         ep_free (struct ep_t* ep); 
-void         ep_send (struct ep_t* ep, int label, int32_t to, void* payload);
-void*        ep_recv (struct ep_t* ep, int label, int32_t from);
-void         ep_sync (struct ep_t* ep, int label);
+
+void         ep_send (struct ep_t* ep, int label, int32_t from, int32_t to, void* payload);
+void*        ep_recv (struct ep_t* ep, int label, int32_t from, int32_t to);
+void         ep_sync (struct ep_t* ep, int label, int32_t syncer);
+
 struct ep_t* ep_link (struct ep_t* ep1, struct ep_t* ep2);
 
-void         ep_test  ();
-void         ep_test_link();
 void         ep_show(struct ep_t* ep);
 
 

@@ -68,16 +68,16 @@ implement test (msg) = let
 
 	val _ = session_request (ch0, 2, llam ch => p0 ch)
 	val _ = session_request (ch1, 2, llam ch => p1 ch)
-	val _ = session_accept ch23456
-
-	val _ = session_request (ch3, 4, llam ch => p3 ch)
-	val _ = session_request (ch5, 4, llam ch => p5 ch)
-	val _ = session_request (ch6, 4, llam ch => p6 ch)
+	val _ = session_accept (ch23456, 2)
 
 	val _ = session_request (ch012, 4, llam ch => p2 (session_link (ch, ch23456)))
+	val _ = session_request (ch3, 4, llam ch => p3 ch)
+
+	val _ = session_request (ch5, 4, llam ch => p5 ch)
+	val _ = session_request (ch6, 4, llam ch => p6 ch)
 		
-	val _ = session_accept ch01234
-	val _ = session_accept ch456
+	val _ = session_accept (ch01234, 4)
+	val _ = session_accept (ch456, 4)
 in 
 	p4 (session_link (ch456, ch01234))
 end 
@@ -88,15 +88,15 @@ end
 
 
 implement p0 (ch) = let 
-	val _ = session_send (ch, 1, "0->1")
-	val _ = session_send (ch, 2, "0->2")
-	val _ = session_send (ch, 4, "0->4")
-	val _ = session_send (ch, 5, "0->5")
+	val _ = session_send (ch, 0, 1, "0->1")
+	val _ = session_send (ch, 0, 2, "0->2")
+	val _ = session_send (ch, 0, 4, "0->4")
+	val _ = session_send (ch, 0, 5, "0->5")
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 3))
+	val _ = println! (session_recv<string> (ch, 3, 0))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
@@ -107,16 +107,16 @@ in
 end
 
 implement p1 (ch) = let 
-	val _ = println! (session_recv<string> (ch, 0))
+	val _ = println! (session_recv<string> (ch, 0, 1))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 6))
+	val _ = println! (session_recv<string> (ch, 6, 1))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 3))
+	val _ = println! (session_recv<string> (ch, 3, 1))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
@@ -127,16 +127,16 @@ end
 
 implement p2 (ch) = let 
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 0))
+	val _ = println! (session_recv<string> (ch, 0, 2))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 6))
+	val _ = println! (session_recv<string> (ch, 6, 2))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 3))
+	val _ = println! (session_recv<string> (ch, 3, 2))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
@@ -153,29 +153,29 @@ implement p3 (ch) = let
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = session_send (ch, 0, "3->0")
-	val _ = session_send (ch, 1, "3->1")
-	val _ = session_send (ch, 2, "3->2")
-	val _ = session_send (ch, 4, "3->4")
-	val _ = session_send (ch, 5, "3->5")
-	val _ = session_send (ch, 6, "3->6")
+	val _ = session_send (ch, 3, 0, "3->0")
+	val _ = session_send (ch, 3, 1, "3->1")
+	val _ = session_send (ch, 3, 2, "3->2")
+	val _ = session_send (ch, 3, 4, "3->4")
+	val _ = session_send (ch, 3, 5, "3->5")
+	val _ = session_send (ch, 3, 6, "3->6")
 in 
-	session_close ch
+	session_close (ch, 3)
 end
 
 implement p4 (ch) = let 
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 0))
+	val _ = println! (session_recv<string> (ch, 0, 4))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 6))
+	val _ = println! (session_recv<string> (ch, 6, 4))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 3))
+	val _ = println! (session_recv<string> (ch, 3, 4))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 in 
@@ -186,16 +186,16 @@ implement p5 (ch) = let
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 0))
+	val _ = println! (session_recv<string> (ch, 0, 5))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 6))
+	val _ = println! (session_recv<string> (ch, 6, 5))
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 3))
+	val _ = println! (session_recv<string> (ch, 3, 5))
 	prval _ = session_skip ch
 in 
 	session_wait (ch, 3)
@@ -206,16 +206,16 @@ implement p6 (ch) = let
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = session_send (ch, 1, "6->1")
-	val _ = session_send (ch, 2, "6->2")
-	val _ = session_send (ch, 4, "6->4")
-	val _ = session_send (ch, 5, "6->5")
+	val _ = session_send (ch, 6, 1, "6->1")
+	val _ = session_send (ch, 6, 2, "6->2")
+	val _ = session_send (ch, 6, 4, "6->4")
+	val _ = session_send (ch, 6, 5, "6->5")
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
 	prval _ = session_skip ch
-	val _ = println! (session_recv<string> (ch, 3))
+	val _ = println! (session_recv<string> (ch, 3, 6))
 in 
 	session_wait (ch, 3)
 end

@@ -46,11 +46,11 @@ absvtype chan (roles, roles, stype) = ptr
 (* session api *)
 fun {a:vt@ype} session_send
     {full,self:roles|full>self} {from,to:role|mem(self,from)*mem(full-self,to)} {s:stype}
-	(!chan(full,self,pmsg(from,to,a)::s)>>chan(full,self,s), int to, a): void
+	(!chan(full,self,pmsg(from,to,a)::s)>>chan(full,self,s), int from, int to, a): void
 
 fun {a:vt@ype} session_recv
 	{full,self:roles|full>self} {from,to:role|mem(full-self,from)*mem(self,to)} {s:stype}
-	(!chan(full,self,pmsg(from,to,a)::s)>>chan(full,self,s), int from): a
+	(!chan(full,self,pmsg(from,to,a)::s)>>chan(full,self,s), int from, int to): a
 
 prfun session_skip 
 	{full,self:roles|full>self} {from,to:role|(mem(self,from)*mem(self,to))+(mem(full-self,from)*mem(full-self,to))} {a:vt@ype} {s:stype}
@@ -58,7 +58,7 @@ prfun session_skip
 
 fun {a:t@ype} session_bsend
     {full,self:roles|full>self} {from:role|mem(self,from)} {s:stype}
-	(!chan(full,self,pbmsg(from,a)::s)>>chan(full,self,s), a): void
+	(!chan(full,self,pbmsg(from,a)::s)>>chan(full,self,s), int from, a): void
 
 fun {a:t@ype} session_brecv
 	{full,self:roles|full>self} {from:role|mem(full-self,from)} {s:stype}
@@ -66,7 +66,7 @@ fun {a:t@ype} session_brecv
 
 fun session_close
 	{full,self:roles|full>self} {r:role|mem(self,r)}
-	(chan(full,self,pend(r))): void 
+	(chan(full,self,pend(r)), int r): void 
 
 fun session_wait
 	{full,self:roles|full>self} {r:role|mem(full-self,r)}
@@ -82,7 +82,7 @@ fun {a:vt@ype} session_make
 
 fun session_accept
 	{full,self:roles|full>self} {r:role|mem(self,r)} {s:stype}
-	(!chan(full,self,pinit(r)::s)>>chan(full,self,s)): void
+	(!chan(full,self,pinit(r)::s)>>chan(full,self,s), int r): void
 
 fun session_request
 	{full,self:roles|full>self} {r:role|mem(full-self,r)} {s:stype}
@@ -111,7 +111,7 @@ fun session_paradisj
 
 fun session_choose
 	{full,self:roles|full>self} {r:role|mem(self,r)} {s,s1,s2:stype}
-	(!chan(full,self,pbranch(r,s1,s2))>>chan(full,self,s), choice(s,s1,s2)): void 
+	(!chan(full,self,pbranch(r,s1,s2))>>chan(full,self,s), int r, choice(s,s1,s2)): void 
 
 fun session_offer
 	{full,self:roles|full>self} {r:role|mem(full-self,r)} {s1,s2:stype}

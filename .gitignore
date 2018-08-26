@@ -1,3 +1,6 @@
 *.dSYM
 *.out
-xcode
+*ats.c
+*.const
+*.tc
+*.o

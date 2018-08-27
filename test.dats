@@ -86,15 +86,19 @@ end
 //local (**)
 
 //#include "./examples/ex-queue.dats"
-#include "./examples/ex-cut-residual.dats"
+//#include "./examples/ex-cut-residual.dats"
+//#include "./examples/ex-sieve.dats"
+#include "./examples/ex-cloud.dats"
 
 //in (**)
 
 implement main0 () = let 
 	val _ = setup ()
-	val _ = test("Test Cut")
+	val _ = test("Test Queue")
+	val _ = $extfcall(void, "sleep", 2)
+//	val _ = $extfcall(void, "g_states")
 in 
-	$extfcall(void, "sleep", 2)
+	
 end 
 
 //end (**)

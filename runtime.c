@@ -23,10 +23,24 @@ void step() {
 	#endif
 }
 
-struct ep_t* g_endpoints[10];
+struct ep_t* g_endpoints[100];
 atomic_int g_eindex = -1;
-struct board_t* g_boards[10];
+struct board_t* g_boards[100];
 atomic_int g_bindex = -1;
+
+void g_states() {
+	log_set_level(LOG_TRACE);
+	puts("Endpoint states\n");
+	for (int i = 0; i <= g_eindex; i++) {
+		if (g_endpoints[i] != NULL)
+			ep_show(g_endpoints[i]);
+	}
+	puts("Board states\n");
+	for (int i = 0; i <= g_bindex; i++) {
+		if (g_boards[i] != NULL)
+			board_show(g_boards[i]);
+	}
+}
 
 void panic(const char* msg) {
 	#define BT_BUF_SIZE 100
@@ -38,16 +52,7 @@ void panic(const char* msg) {
 	fprintf(stderr, "backtrace() returned %d addresses\n", nptrs);
 	backtrace_symbols_fd(buffer, nptrs, STDERR_FILENO);
 
-	puts("\n");
-	for (int i = 0; i <= g_eindex; i++) {
-		if (g_endpoints[i] != NULL)
-			ep_show(g_endpoints[i]);
-	}
-	puts("\n");
-	for (int i = 0; i <= g_bindex; i++) {
-		if (g_boards[i] != NULL)
-			board_show(g_boards[i]);
-	}
+	g_states();
 
 	exit(EXIT_FAILURE);
 	#undef BT_BUF_SIZE

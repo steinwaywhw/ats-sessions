@@ -14,6 +14,7 @@ void    panic    (const char* msg);
 int32_t arr2bits (int n, int* arr);
 void    step     (); // Dummy getchar() when DEBUG.
 void    install_handler();
+void    g_states();
 
 /**
  * Use `PACK(a, b, c)` to generate `arr2bits(3, (int[3]){a, b, c})`
@@ -136,16 +137,17 @@ struct ep_t {
 #define ep_get_self(x) (((struct ep_t*)(x))->self)
 #define ep_get_full(x) (((struct ep_t*)(x))->full)
 
-struct ep_t* ep_make (int32_t full, int32_t self, struct board_t* board);
-void         ep_free (struct ep_t* ep); 
+struct ep_t* ep_make  (int32_t full, int32_t self, struct board_t* board);
+void         ep_free  (struct ep_t* ep); 
+struct ep_t* ep_split (struct ep_t* ep, int32_t split);
 
-void         ep_send (struct ep_t* ep, int label, int32_t from, int32_t to, void* payload);
-void*        ep_recv (struct ep_t* ep, int label, int32_t from, int32_t to);
-void         ep_sync (struct ep_t* ep, int label, int32_t syncer);
+void         ep_send  (struct ep_t* ep, int label, int32_t from, int32_t to, void* payload);
+void*        ep_recv  (struct ep_t* ep, int label, int32_t from, int32_t to);
+void         ep_sync  (struct ep_t* ep, int label, int32_t syncer);
 
-struct ep_t* ep_link (struct ep_t* ep1, struct ep_t* ep2);
+struct ep_t* ep_link  (struct ep_t* ep1, struct ep_t* ep2);
 
-void         ep_show(struct ep_t* ep);
+void         ep_show  (struct ep_t* ep);
 
 
 

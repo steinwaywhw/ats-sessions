@@ -22,7 +22,7 @@ implement {a} empty () = let
 		val c = session_offer (left, C) 
 	in 
 		case+ c of 
-		| ~Right() => (session_choose (left, Right()); session_close left)
+		| ~Right() => (session_choose (left, S, Right()); session_close (left, S))
 		| ~Left()  => 
 			let 
 				val x = session_brecv<a> (left, C) 
@@ -45,15 +45,15 @@ implement {a} elem (right, x) = let
 			let 
 				val y = session_brecv<a> (left, C)
 				prval _ = session_unroll right 
-				val _ = session_choose (right, Left())
-				val _ = session_bsend<a> (right, y)
+				val _ = session_choose (right, C, Left())
+				val _ = session_bsend<a> (right, C, y)
 			in 
 				server (left, right)
 			end 
 		| ~Right() => 
 			let
-				val _ = session_choose (left, Left())
-				val _ = session_bsend<a> (left, x)
+				val _ = session_choose (left, S, Left())
+				val _ = session_bsend<a> (left, S, x)
 			in 
 				session_emp (session_link (left, right))
 			end 
@@ -64,14 +64,14 @@ end
 
 implement {a} enq (ch, x) = let 
 	prval _ = session_unroll ch 
-	val _ = session_choose (ch, Left())
-	val _ = session_bsend<a> (ch, x)
+	val _ = session_choose (ch, C, Left())
+	val _ = session_bsend<a> (ch, C, x)
 in 
 end 
 
 implement free<int> (ch) = let 
 	prval _ = session_unroll ch 
-	val _ = session_choose (ch, Right())
+	val _ = session_choose (ch, C, Right())
 	val c = session_offer (ch, S) 
 in 
 	case+ c of 

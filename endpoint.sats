@@ -10,6 +10,7 @@ absvtype endpoint = ptr
 
 fun ep_make {full,self:set|full>self} (set full, set self, !board): endpoint = "mac#"
 fun ep_free (endpoint): void = "mac#"
+fun ep_split {s:set} (!endpoint, set s): endpoint = "mac#"
 
 fun ep_get_self (!endpoint): [s:set] set s = "mac#"
 fun ep_get_full (!endpoint): [s:set] set s = "mac#"

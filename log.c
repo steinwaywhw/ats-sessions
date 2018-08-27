@@ -72,16 +72,17 @@ void log_set_lock(log_LockFn fn) {
   L.lock = fn;
 }
 
-void pthread_lock(void* udata, int lock) {
+extern void pthread_lock(void* udata, int lock) {
   if (lock == 1) 
     pthread_mutex_lock((pthread_mutex_t*)udata);
   else 
     pthread_mutex_unlock((pthread_mutex_t*)udata);
 }
 
-pthread_mutex_t glock = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t g_lock = PTHREAD_MUTEX_INITIALIZER;
+
 void log_set_pthread() {
-  log_set_udata(&glock);
+  log_set_udata(&g_lock);
   log_set_lock(pthread_lock);
 }
 

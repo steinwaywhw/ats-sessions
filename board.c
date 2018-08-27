@@ -10,6 +10,7 @@ struct board_t* board_make(const char* id) {
 	strcpy(b->id, id);
 	b->refcount = 1;
 
+	log_info("Board %s @ %p allocated.", b->id, b);
 	// Debug
 	g_boards[++g_bindex] = b;
 	return b;
@@ -104,7 +105,7 @@ PRIVATE void search(int i, struct msg_t* cur , struct search_env_t* env) {
 		SETENV(i, cur);
 
 		#ifndef NDEBUG
-			char buffer[50];
+			char buffer[100];
 			int j = sprintf(buffer, "Searching for %s ", msg_show_label(env->pattern));
 			j += msg_show_senders(env->pattern, buffer+j);
 			j += sprintf(buffer+j, " => ");
@@ -114,7 +115,7 @@ PRIVATE void search(int i, struct msg_t* cur , struct search_env_t* env) {
 	}
 
 	#ifndef NDEBUG
-		char buffer[50];
+		char buffer[100];
 		int j = sprintf(buffer, "Searching for %s ", msg_show_label(env->pattern));
 		j += msg_show_senders(env->pattern, buffer+j);
 		j += sprintf(buffer+j, " => ");
@@ -234,7 +235,7 @@ struct board_t* board_read(struct board_t* b, struct msg_t* pattern, struct msg_
 			pthread_cond_timedwait(&b->cond, &b->mutex, &timeout);
 
 			#ifndef NDEBUG
-				char buffer[50];
+				char buffer[100];
 				int i = 0;
 				i = sprintf(buffer, "Searching for %s ", msg_show_label(pattern));
 				i += msg_show_senders(pattern, buffer+i);
@@ -356,7 +357,7 @@ struct board_t* board_read(struct board_t* b, struct msg_t* pattern, struct msg_
 }
 
 PRIVATE void board_dbgfn(int i, struct msg_t* m, void* env) {
-	char prefix[10];
+	char prefix[30];
 	sprintf(prefix, "  %s => ", env);
 	msg_show_prefix(m, prefix);
 }

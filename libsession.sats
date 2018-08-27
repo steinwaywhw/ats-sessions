@@ -96,6 +96,14 @@ castfn session_unify
 	   {full,self:roles|full>self} {r:role|mem(self,r)} {fp:int->stype} 
 	   (chan(full,self,pquan(r,fp))): {n:int} chan(full,self,fp(n))
 
+castfn session_exify2 
+	   {full,self:roles|full>self} {r:role|mem(full-self,r)} {fp:stype->stype} 
+	   (chan(full,self,pquan2(r,fp))): [p:stype] chan(full,self,fp(p))
+
+castfn session_unify2
+	   {full,self:roles|full>self} {r:role|mem(self,r)} {fp:stype->stype} 
+	   (chan(full,self,pquan2(r,fp))): {p:stype} chan(full,self,fp(p))
+
 prfun session_unroll
 	  {full,self:roles|full>self} {f:stype->stype} 
 	  (!chan(full,self,pfix(f))>>chan(full,self,f(pfix(f)))): void
@@ -139,5 +147,5 @@ fun session_full
 
 fun session_split
 	{full,rs1,rs2:roles|(full>rs1)*(full>rs2)*disj(rs1,rs2)} {s:stype}
-	(!chan(full,rs1+rs2,s)>>chan(full,rs2,s), chan(full,rs1,s) -<lincloptr1> void): void
+	(set rs1, set rs2, !chan(full,rs1+rs2,s)>>chan(full,rs1,s), chan(full,rs2,s) -<lincloptr1> void): void
 

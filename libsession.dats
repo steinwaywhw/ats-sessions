@@ -164,3 +164,12 @@ in
 	ignoret athread_create_cloptr_exn (llam () => threadfn (ch, f))
 end
 
+implement session_split {full,rs1,rs2} {s} (rs1, rs2, ch12, f2) = let 
+	val ep12 = $UNSAFE.castvwtp1{endpoint} ch12
+	val ep2 = ep_split (ep12, rs1)
+	val _ = athread_create_cloptr_exn (llam () => let val _ = f2 ($UNSAFE.castvwtp0{chan(full,rs2,s)} ep2) in $UNSAFE.castvwtp0{void} f2 end)
+	val _ = $UNSAFE.castvwtp0{void} ep12
+	extern praxi cast {x:stype} (!chan(full,rs1+rs2,x)>>chan(full,rs1,x)): unit_p
+	prval _ = cast ch12
+in 
+end

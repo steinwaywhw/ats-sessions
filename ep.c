@@ -23,6 +23,14 @@ void ep_free(struct ep_t* ep) {
 	return;
 }
 
+struct ep_t* ep_split(struct ep_t* ep, int32_t split) {
+	assert(MSG_SET_SUP(ep->self, split));
+
+	ep->self = MSG_SET_MINUS(ep->self, split);
+	struct ep_t* ret = ep_make(ep->full, split, board_ref(ep->board));
+	return ret;
+}
+
 void ep_send(struct ep_t* ep, int label, int32_t from, int32_t to, void* payload) {
 	struct msg_t* m       = msg_make(label, from, to, payload);
 	struct board_t* child = board_write(ep->board, m);
@@ -71,7 +79,7 @@ void* ep_recv(struct ep_t* ep, int label, int32_t from, int32_t to) {
 void ep_sync(struct ep_t* ep, int label, int syncer) {
 	int32_t senders = MSG_SET_MINUS(ep->full, ep->self);
 	
-	char buffer[20];
+	char buffer[100];
 	int i = 0;
 	while (senders > 0) {
 		for(unsigned int mask = 0x80; mask; mask >>= 1) {
@@ -136,7 +144,7 @@ struct ep_t* ep_link(struct ep_t* ep1, struct ep_t* ep2) {
 }
 
 void ep_show(struct ep_t* ep) {
-	char buffer[64];
+	char buffer[100];
 	int i = sprintf(buffer, "Endpoint [");
 	for(unsigned int mask = 0x80; mask; mask >>= 1) {
 		i += sprintf(buffer+i, "%d", !!(mask & ep->full));    	
